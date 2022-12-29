@@ -1,10 +1,16 @@
 class DrumPad extends React.Component {
+  handleClick = () => {
+    const audioElement = document.querySelector(`#${this.props.label}`);
+    audioElement.play();
+  };
+
   render() {
     return (
       <div className="col">
         <button
           className="drum-pad btn btn-primary w-100"
           id={this.props.soundFile}
+          onClick={this.handleClick}
         >
           {this.props.label}
           <audio
@@ -60,7 +66,11 @@ class DrumMachine extends React.Component {
   render() {
     const currentSound = "Sound X";
     return (
-      <div id="drum-machine" className="container my-3">
+      <div
+        id="drum-machine"
+        className="container my-3"
+        onKeyPress={(event) => console.log(`Key pressed: ${event}`)}
+      >
         <div className="row">
           <div className="col">
             <h1>RMX-666 Drum Machine</h1>
