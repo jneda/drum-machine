@@ -1,8 +1,26 @@
 class DrumPad extends React.Component {
+  componentDidMount() {
+    document.addEventListener("keypress", this.handleKeypress);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keypress", this.handleKeypress);
+  }
+
+  handleKeypress = (event) => {
+    if (event.key === this.props.label.toLowerCase()) {
+      document.querySelector(`#${this.props.label}`).click();
+    }
+  }
+
   handleClick = () => {
+    this.playSoundClip();
+  }
+
+  playSoundClip() {
     const audioElement = document.querySelector(`#${this.props.label}`);
     audioElement.play();
-  };
+  }
 
   render() {
     return (
@@ -69,7 +87,6 @@ class DrumMachine extends React.Component {
       <div
         id="drum-machine"
         className="container my-3"
-        onKeyPress={(event) => console.log(`Key pressed: ${event}`)}
       >
         <div className="row">
           <div className="col">
