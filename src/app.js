@@ -1,45 +1,11 @@
 class DrumPad extends React.Component {
-  componentDidMount() {
-    document.addEventListener("keydown", this.handleKeydown);
-    document.addEventListener("keyup", this.handleKeyup);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeydown);
-    document.removeEventListener("keyup", this.handleKeyup);
-  }
-
-  handleKeydown = (event) => {
-    if (event.key.toUpperCase() === this.props.label) {
-      const thisButton = document.querySelector(`#${this.props.soundFile}`);
-      thisButton.classList.add("active");
-      thisButton.click();
-    }
-  };
-
-  handleKeyup = (event) => {
-    if (event.key.toUpperCase() === this.props.label) {
-      const thisButton = document.querySelector(`#${this.props.soundFile}`);
-      thisButton.classList.remove("active");
-    }
-  };
-
-  handleClick = () => {
-    this.playSoundClip();
-  };
-
-  playSoundClip() {
-    const audioElement = document.querySelector(`#${this.props.label}`);
-    audioElement.play();
-  }
-
   render() {
     return (
       <div className="col">
         <button
           className="drum-pad btn btn-primary w-100"
           id={this.props.soundFile}
-          onClick={this.handleClick}
+          onClick={this.props.onClick}
         >
           {this.props.label}
           <audio
@@ -63,7 +29,12 @@ class PadBank extends React.Component {
         const padIndex = rowIndex * 3 + colIndex;
         const { label, soundFile } = padsData[padIndex];
         padRow.push(
-          <DrumPad key={label} label={label} soundFile={soundFile} />
+          <DrumPad
+            key={label}
+            label={label}
+            soundFile={soundFile}
+            onClick={() => this.props.onClick(label)}
+          />
         );
       }
       pads.push(
@@ -92,8 +63,99 @@ class Controls extends React.Component {
 }
 
 class DrumMachine extends React.Component {
+  padsData = [
+    {
+      label: "Q",
+      soundFile: "Tom01",
+    },
+    {
+      label: "W",
+      soundFile: "Tom02",
+    },
+    {
+      label: "E",
+      soundFile: "Tom03",
+    },
+    {
+      label: "A",
+      soundFile: "HH_01",
+    },
+    {
+      label: "S",
+      soundFile: "HHo_01",
+    },
+    {
+      label: "D",
+      soundFile: "Cym01",
+    },
+    {
+      label: "Z",
+      soundFile: "BD01",
+    },
+    {
+      label: "X",
+      soundFile: "Cow01",
+    },
+    {
+      label: "C",
+      soundFile: "Snr01",
+    },
+  ];
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentSound: ''
+    };
+  }
+
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeydown);
+    document.addEventListener("keyup", this.handleKeyup);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeydown);
+    document.removeEventListener("keyup", this.handleKeyup);
+  }
+
+  handleClick = (padLabel) => {
+    const labels = this.padsData.map((padData) => padData.label);
+    if (labels.includes(padLabel)) {
+      document.querySelector(`#${padLabel}`).play();
+      const padData = this.padsData.find(
+        (padData) => padData.label === padLabel
+      );
+      this.setState({ currentSound: padData.soundFile });
+    }
+  };
+
+  handleKeydown = (event) => {
+    const padLabel = event.key.toUpperCase();
+    const labels = this.padsData.map((padData) => padData.label);
+    if (labels.includes(padLabel)) {
+      this.handleClick(padLabel);
+      const padData = this.padsData.find(
+        (padData) => padData.label === padLabel
+      );
+      document.querySelector(`#${padData.soundFile}`).classList.add("active");
+    }
+  };
+
+  handleKeyup = (event) => {
+    const padLabel = event.key.toUpperCase();
+    const labels = this.padsData.map((padData) => padData.label);
+    if (labels.includes(padLabel)) {
+      const padData = this.padsData.find(
+        (padData) => padData.label === padLabel
+      );
+      document
+        .querySelector(`#${padData.soundFile}`)
+        .classList.remove("active");
+    }
+  };
+
   render() {
-    const currentSound = "Sound X";
     return (
       <div id="drum-machine" className="container my-3">
         <div className="row">
@@ -102,52 +164,16 @@ class DrumMachine extends React.Component {
           </div>
         </div>
         <div className="row">
-          <PadBank padsData={padsData} />
-          <Controls value={currentSound} />
+          <PadBank
+            padsData={this.padsData}
+            onClick={(label) => this.handleClick(label)}
+          />
+          <Controls value={this.state.currentSound} />
         </div>
       </div>
     );
   }
 }
-
-const padsData = [
-  {
-    label: "Q",
-    soundFile: "Tom01",
-  },
-  {
-    label: "W",
-    soundFile: "Tom02",
-  },
-  {
-    label: "E",
-    soundFile: "Tom03",
-  },
-  {
-    label: "A",
-    soundFile: "HH_01",
-  },
-  {
-    label: "S",
-    soundFile: "HHo_01",
-  },
-  {
-    label: "D",
-    soundFile: "Cym01",
-  },
-  {
-    label: "Z",
-    soundFile: "BD01",
-  },
-  {
-    label: "X",
-    soundFile: "Cow01",
-  },
-  {
-    label: "C",
-    soundFile: "Snr01",
-  },
-];
 
 const root = ReactDOM.createRoot(document.querySelector("#root"));
 root.render(<DrumMachine />);
