@@ -1,21 +1,32 @@
 class DrumPad extends React.Component {
   componentDidMount() {
-    document.addEventListener("keypress", this.handleKeypress);
+    document.addEventListener("keydown", this.handleKeydown);
+    document.addEventListener("keyup", this.handleKeyup);
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keypress", this.handleKeypress);
+    document.removeEventListener("keydown", this.handleKeydown);
+    document.removeEventListener("keyup", this.handleKeyup);
   }
 
-  handleKeypress = (event) => {
+  handleKeydown = (event) => {
     if (event.key.toUpperCase() === this.props.label) {
-      document.querySelector(`#${this.props.label}`).click();
+      const thisButton = document.querySelector(`#${this.props.soundFile}`);
+      thisButton.classList.add("active");
+      thisButton.click();
     }
-  }
+  };
+
+  handleKeyup = (event) => {
+    if (event.key.toUpperCase() === this.props.label) {
+      const thisButton = document.querySelector(`#${this.props.soundFile}`);
+      thisButton.classList.remove("active");
+    }
+  };
 
   handleClick = () => {
     this.playSoundClip();
-  }
+  };
 
   playSoundClip() {
     const audioElement = document.querySelector(`#${this.props.label}`);
@@ -84,10 +95,7 @@ class DrumMachine extends React.Component {
   render() {
     const currentSound = "Sound X";
     return (
-      <div
-        id="drum-machine"
-        className="container my-3"
-      >
+      <div id="drum-machine" className="container my-3">
         <div className="row">
           <div className="col">
             <h1>RMX-666 Drum Machine</h1>
