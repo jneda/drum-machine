@@ -8,7 +8,7 @@ class DrumPad extends React.Component {
   }
 
   handleKeypress = (event) => {
-    if (event.key === this.props.label.toLowerCase()) {
+    if (event.key.toUpperCase() === this.props.label) {
       document.querySelector(`#${this.props.label}`).click();
     }
   }
