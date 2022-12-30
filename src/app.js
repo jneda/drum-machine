@@ -45,7 +45,7 @@ class PadBank extends React.Component {
     }
 
     return (
-      <div id="pad-bank" className="col">
+      <div id="pad-bank" className="col-12 col-md-6">
         {pads}
       </div>
     );
@@ -55,7 +55,7 @@ class PadBank extends React.Component {
 class Controls extends React.Component {
   render() {
     return (
-      <div id="display" className="col">
+      <div id="display" className="col-12 col-md-6">
         {this.props.value}
       </div>
     );
